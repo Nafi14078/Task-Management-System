@@ -13,9 +13,9 @@ const Dashboard = () => {
   }, [user, navigate]);
 
   return (
-    <div>
+    <div className="container dashboard-container">
       <h2>Dashboard</h2>
-      <button onClick={logout}>Logout</button>
+      <button onClick={logout} className="btn btn-danger">Logout</button>
     </div>
   );
 };

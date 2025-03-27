@@ -1,19 +1,22 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar"; // Import Navbar
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 
-function App() {
+const App = () => {
   return (
-    <Router>
+    <>
+      <Navbar /> {/* Add Navbar Here */}
       <Routes>
+        <Route path="/" element={<Login />} /> {/* Default to Login */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
-    </Router>
+    </>
   );
-}
+};
 
 export default App;
