@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+//import { FaHome } from "react-icons/fa"; // Import home icon
 
 const Navbar = () => {
   return (
@@ -22,6 +23,11 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/">
+                Home
+              </Link>
+            </li>
             <li className="nav-item">
               <Link className="nav-link" to="/register">
                 Register

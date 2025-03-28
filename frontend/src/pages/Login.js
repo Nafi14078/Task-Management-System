@@ -1,34 +1,56 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const navigate = useNavigate(); // Use navigate for redirection
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post("http://localhost:5000/api/auth/login", {
+      const response = await axios.post("http://localhost:5000/api/auth/login", {
         email,
         password,
       });
 
-      localStorage.setItem("token", data.token); // Store token
-      alert("Login successful!");
-      navigate("/dashboard");
+      // Store token in localStorage
+      localStorage.setItem("token", response.data.token);
+
+      // Redirect to Home Page after login
+      navigate("/home"); 
     } catch (error) {
-      alert("Error: " + error.response.data.message);
+      setError("Invalid email or password");
     }
   };
 
   return (
     <div className="container auth-container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input type="email" placeholder="Email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      <h2 className="text-center">Login</h2>
+      {error && <p className="text-danger text-center">{error}</p>}
+      <form onSubmit={handleLogin} className="">
+        <div className="mb-3">
+          <input
+            type="email"
+            className="form-control"
+            value={email}
+            placeholder="Email"
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
         <button type="submit" className="btn btn-primary">Login</button>
       </form>
     </div>

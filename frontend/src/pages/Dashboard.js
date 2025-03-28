@@ -1,21 +1,15 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import React from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
+  const { user } = useAuth();
 
   return (
-    <div className="container dashboard-container">
-      <h2>Dashboard</h2>
-      <button onClick={logout} className="btn btn-danger">Logout</button>
+    <div className="dashboard">
+      <h2>User Profile</h2>
+      <p>Email: {user?.email}</p>
+      <p>Role: {user?.role}</p>
+      <p>Account Created: {new Date(user?.createdAt).toLocaleDateString()}</p>
     </div>
   );
 };
