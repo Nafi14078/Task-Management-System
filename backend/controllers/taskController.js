@@ -29,6 +29,39 @@ const createTask = async (req, res) => {
   }
 };
 
+const getTaskById = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    
+    if (!task) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Task not found' 
+      });
+    }
+
+    // Verify task belongs to requesting user
+    if (task.user.toString() !== req.user.id) {
+      return res.status(403).json({ 
+        success: false,
+        message: 'Not authorized to access this task' 
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: task
+    });
+
+  } catch (error) {
+    console.error('Error fetching task:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error while fetching task' 
+    });
+  }
+};
+
 const updateTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
@@ -67,6 +100,7 @@ const deleteTask = async (req, res) => {
 
 module.exports = {
   getTasks,
+  getTaskById,
   createTask,
   updateTask,
   deleteTask

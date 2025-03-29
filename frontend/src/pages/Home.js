@@ -82,43 +82,54 @@ const Home = () => {
         </div>
       ) : (
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {tasks.map((task) => (
-            <div key={task._id} className="col">
-              <div className={`card h-100 ${task.status === "Completed" ? "border-success" : "border-warning"}`}>
-                <div className="card-body">
-                  <div className="d-flex justify-content-between align-items-start">
-                    <h5 className="card-title">{task.title}</h5>
-                    <span className={`badge ${getPriorityBadge(task.priority)}`}>
-                      {task.priority}
-                    </span>
-                  </div>
-                  <p className="card-text text-muted">{task.description}</p>
-                  <div className="mb-2">
-                    <small className="text-muted">Due: {new Date(task.dueDate).toLocaleDateString()}</small>
-                  </div>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className={`badge ${task.status === "Completed" ? "bg-success" : "bg-warning"}`}>
-                      {task.status}
-                    </span>
-                    <div>
-                      <Link 
-                        to={`/edit-task/${task._id}`} 
-                        className="btn btn-sm btn-outline-secondary me-2"
-                      >
-                        Edit
-                      </Link>
-                      <button 
-                        onClick={() => handleDelete(task._id)}
-                        className="btn btn-sm btn-outline-danger"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+    {tasks.map(task => (
+  <div 
+    key={task._id} 
+    className="col"
+    onClick={() => navigate(`/tasks/${task._id}`)}
+    style={{ cursor: 'pointer' }}
+  >
+    <div className={`card h-100 ${task.status === "Completed" ? "border-success" : "border-warning"}`}>
+      <div className="card-body">
+        <div className="d-flex justify-content-between align-items-start">
+          <h5 className="card-title">{task.title}</h5>
+          <span className={`badge ${getPriorityBadge(task.priority)}`}>
+            {task.priority}
+          </span>
+        </div>
+        <p className="card-text text-muted">{task.description}</p>
+        <div className="mb-2">
+          <small className="text-muted">
+            Due: {new Date(task.dueDate).toLocaleDateString()}
+          </small>
+        </div>
+        <div className="d-flex justify-content-between align-items-center">
+          <span className={`badge ${task.status === "Completed" ? "bg-success" : "bg-warning"}`}>
+            {task.status}
+          </span>
+          <div>
+            <Link 
+              to={`/edit-task/${task._id}`} 
+              className="btn btn-sm btn-outline-secondary me-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Edit
+            </Link>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(task._id);
+              }}
+              className="btn btn-sm btn-outline-danger"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+))}
         </div>
       )}
     </div>

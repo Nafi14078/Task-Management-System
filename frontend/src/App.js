@@ -7,6 +7,7 @@ import Home from "./pages/Home"; // Import Home Page
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import TaskDetail from './pages/TaskDetail';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/create-task" element={<CreateTask />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/tasks/:id" element={<TaskDetail />} />
         </Routes>
       </div>
       <Footer />
