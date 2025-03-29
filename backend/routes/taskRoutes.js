@@ -1,10 +1,19 @@
-const express = require("express");
-const { createTask, getTasks } = require("../controllers/taskController");
-const { protect } = require("../middleware/authMiddleware");
-
+const express = require('express');
 const router = express.Router();
+const { 
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask
+} = require('../controllers/taskController');
+const { protect } = require('../middleware/authMiddleware');
 
-router.post("/", protect, createTask);  // ✅ This should be correct
-router.get("/", protect, getTasks); 
+router.route('/')
+  .get(protect, getTasks)
+  .post(protect, createTask);
+
+router.route('/:id')
+  .put(protect, updateTask)
+  .delete(protect, deleteTask);
 
 module.exports = router;

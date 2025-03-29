@@ -13,28 +13,24 @@ const CreateTask = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("You must be logged in to create a task!");
-        return;
-      }
-
       const response = await axios.post(
-        "http://localhost:5000/api/tasks",
-        { title, description, priority, dueDate, status },
-        { headers: { Authorization: `Bearer ${token}` } }
+        '/api/tasks',
+        { title, description, priority, dueDate },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        }
       );
-
+  
       if (response.status === 201) {
-        alert("Task created successfully!");
-        navigate("/home"); // ✅ Redirect to Home after successful creation
+        navigate('/home', { state: { shouldRefresh: true } });
       }
     } catch (error) {
-      console.error("Error creating task:", error);
-      alert("Failed to create task. Please try again.");
+      console.error('Error:', error.response?.data);
+      alert(error.response?.data?.message || 'Failed to create task');
     }
   };
-
   return (
     <div className="container mt-5">
       <h2 className="text-center">Create New Task</h2>
