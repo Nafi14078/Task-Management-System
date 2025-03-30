@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import TaskDetail from './pages/TaskDetail';
+import EditTask from "./pages/EditTask";
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
           <Route path="/create-task" element={<CreateTask />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tasks/:id" element={<TaskDetail />} />
+          <Route path="/edit-task/:id" element={<EditTask />} />
         </Routes>
       </div>
       <Footer />

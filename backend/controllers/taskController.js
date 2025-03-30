@@ -49,11 +49,19 @@ const getTaskById = async (req, res) => {
 
 const updateTask = async (req, res) => {
   try {
+    console.log("Received update request for task:", req.params.id);
+    console.log("Update data:", req.body);
+
     const task = await Task.findById(req.params.id);
-    if (!task) return res.status(404).json({ message: 'Task not found' });
+    
+    if (!task) {
+      console.log("Task not found.");
+      return res.status(404).json({ message: "Task not found" });
+    }
     
     if (task.user.toString() !== req.user.id) {
-      return res.status(401).json({ message: 'Not authorized' });
+      console.log("User not authorized.");
+      return res.status(401).json({ message: "Not authorized" });
     }
 
     const updatedTask = await Task.findByIdAndUpdate(
@@ -61,8 +69,11 @@ const updateTask = async (req, res) => {
       req.body,
       { new: true }
     );
+
+    console.log("Updated task:", updatedTask);
     res.json(updatedTask);
   } catch (error) {
+    console.error("Error updating task:", error);
     res.status(400).json({ message: error.message });
   }
 };
