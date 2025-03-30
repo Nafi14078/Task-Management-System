@@ -7,7 +7,6 @@ const TaskDetail = () => {
   const { id } = useParams();
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,21 +18,29 @@ const TaskDetail = () => {
           return;
         }
 
+        console.log('Fetching task with ID:', id); // Debug log
+        
         const response = await axios.get(`http://localhost:5000/api/tasks/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        // Ensure dates are properly formatted
-        const taskData = {
-          ...response.data,
-          dueDate: new Date(response.data.dueDate),
-          createdAt: new Date(response.data.createdAt)
-        };
-
-        setTask(taskData);
-      } catch (err) {
-        setError(err.response?.data?.message || 'Failed to load task details');
-        console.error('Error fetching task:', err);
+        console.log('API Response:', response.data); // Debug log
+        
+        if (response.data) {
+          setTask({
+            ...response.data,
+            dueDate: new Date(response.data.dueDate),
+            createdAt: new Date(response.data.createdAt)
+          });
+        } else {
+          console.error('Empty response received');
+        }
+      } catch (error) {
+        console.error('Error details:', {
+          message: error.message,
+          response: error.response,
+          request: error.request
+        });
       } finally {
         setLoading(false);
       }
@@ -43,43 +50,16 @@ const TaskDetail = () => {
   }, [id, navigate]);
 
   if (loading) {
-    return (
-      <div className="container mt-5 text-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container mt-5">
-        <div className="alert alert-danger">
-          {error}
-          <button 
-            className="btn btn-link" 
-            onClick={() => navigate('/home')}
-          >
-            Back to Tasks
-          </button>
-        </div>
-      </div>
-    );
+    return <div className="spinner-border text-primary"></div>;
   }
 
   if (!task) {
     return (
-      <div className="container mt-5">
-        <div className="alert alert-warning">
-          Task not found
-          <button 
-            className="btn btn-link" 
-            onClick={() => navigate('/home')}
-          >
-            Back to Tasks
-          </button>
-        </div>
+      <div className="alert alert-danger">
+        Failed to load task details. Check console for errors.
+        <button onClick={() => navigate('/home')} className="btn btn-link">
+          Back to Tasks
+        </button>
       </div>
     );
   }
@@ -88,25 +68,18 @@ const TaskDetail = () => {
     <div className="container mt-4">
       <div className="card shadow">
         <div className="card-header bg-primary text-white">
-          <h2 className="mb-0">Task Details</h2>
+          <h2>{task.title || 'Untitled Task'}</h2>
         </div>
         <div className="card-body">
           <div className="mb-3">
-            <h3>{task.title || 'No title'}</h3>
-            <p className="text-muted">
-              Created: {task.createdAt.toLocaleString()}
-            </p>
-          </div>
-
-          <div className="mb-3">
             <h5>Description</h5>
-            <p className="lead">{task.description || 'No description'}</p>
+            <p>{task.description || 'No description available'}</p>
           </div>
 
           <div className="row mb-3">
             <div className="col-md-4">
               <h5>Priority</h5>
-              <span className={`badge ${getPriorityBadge(task.priority)}`}>
+              <span className={`badge ${getPriorityClass(task.priority)}`}>
                 {task.priority || 'Not set'}
               </span>
             </div>
@@ -121,33 +94,18 @@ const TaskDetail = () => {
               <p>{task.dueDate.toLocaleDateString() || 'Not set'}</p>
             </div>
           </div>
-
-          <div className="d-flex justify-content-between">
-            <button 
-              className="btn btn-secondary"
-              onClick={() => navigate('/home')}
-            >
-              Back to Tasks
-            </button>
-            <button 
-              className="btn btn-primary"
-              onClick={() => navigate(`/edit-task/${task._id}`)}
-            >
-              Edit Task
-            </button>
-          </div>
         </div>
       </div>
     </div>
   );
 };
 
-const getPriorityBadge = (priority) => {
+const getPriorityClass = (priority) => {
   switch (priority) {
-    case "High": return "bg-danger";
-    case "Medium": return "bg-primary";
-    case "Low": return "bg-secondary";
-    default: return "bg-light text-dark";
+    case 'High': return 'bg-danger';
+    case 'Medium': return 'bg-primary';
+    case 'Low': return 'bg-secondary';
+    default: return 'bg-light text-dark';
   }
 };
 

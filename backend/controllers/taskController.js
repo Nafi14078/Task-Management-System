@@ -31,34 +31,19 @@ const createTask = async (req, res) => {
 
 const getTaskById = async (req, res) => {
   try {
+    console.log('Finding task:', req.params.id); // Debug log
     const task = await Task.findById(req.params.id);
     
     if (!task) {
-      return res.status(404).json({ 
-        success: false,
-        message: 'Task not found' 
-      });
+      console.log('Task not found');
+      return res.status(404).json({ message: 'Task not found' });
     }
 
-    // Verify task belongs to requesting user
-    if (task.user.toString() !== req.user.id) {
-      return res.status(403).json({ 
-        success: false,
-        message: 'Not authorized to access this task' 
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: task
-    });
-
-  } catch (error) {
-    console.error('Error fetching task:', error);
-    res.status(500).json({ 
-      success: false,
-      message: 'Server error while fetching task' 
-    });
+    console.log('Found task:', task); // Debug log
+    res.json(task);
+  } catch (err) {
+    console.error('Controller error:', err);
+    res.status(500).json({ message: 'Server Error' });
   }
 };
 
