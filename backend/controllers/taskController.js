@@ -2,12 +2,20 @@ const Task = require('../models/Task');
 
 const getTasks = async (req, res) => {
   try {
-    const tasks = await Task.find({ user: req.user.id });
+    const { search } = req.query; // Get search query
+    let query = { user: req.user.id };
+
+    if (search) {
+      query.title = { $regex: search, $options: "i" }; // Case-insensitive search
+    }
+
+    const tasks = await Task.find(query);
     res.status(200).json(tasks);
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 
 const createTask = async (req, res) => {
   try {
